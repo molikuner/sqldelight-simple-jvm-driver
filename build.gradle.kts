@@ -19,8 +19,8 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("com.squareup.sqldelight:sqlite-driver:1.1.4")
-    implementation("com.squareup.sqldelight:runtime-jvm:1.1.4")
+    implementation("com.squareup.sqldelight:sqlite-driver:$version")
+    implementation("com.squareup.sqldelight:runtime-jvm:$version")
 }
 
 tasks.withType<KotlinCompile> {
@@ -61,9 +61,17 @@ publishing {
     }
 }
 
+fun getProperty(project: String, environment: String): String? {
+    return if (this.project.hasProperty(project)) {
+        this.project.property(project) as? String?
+    } else {
+        System.getenv(environment)
+    }
+}
+
 bintray {
-    user = if (project.hasProperty("bintray.user")) project.property("bintray.user") as String else System.getenv("BINTRAY_USER")
-    key = if (project.hasProperty("bintray.apiKey")) project.property("bintray.apiKey") as String else System.getenv("BINTRAY_API_KEY")
+    user = getProperty(project = "bintray.user", environment = "BINTRAY_USER")
+    key = getProperty(project = "bintray.apiKey", environment = "BINTRAY_API_KEY")
     setPublications("default")
     pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
         repo = "maven-extensions"
@@ -80,6 +88,11 @@ bintray {
             val rootVersion = rootProject.version as String
             name = rootVersion
             vcsTag = rootVersion
+            gpg(delegateClosureOf<BintrayExtension.GpgConfig> {
+                sign = true
+                passphrase = getProperty(project = "bintray.gpg.passphrase", environment = "BINTRAY_GPG_PASSPHRASE")
+            })
         })
+        publish = true
     })
 }
