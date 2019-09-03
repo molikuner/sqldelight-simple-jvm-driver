@@ -1,0 +1,46 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  image: openjdk:8-jdk-stretch
+  commands:
+  - ./gradlew build
+  - ./gradlew publish
+
+- name: deploy
+  image: openjdk:8-jdk-stetch
+  commands:
+  - ./gradlew bintrayUpload
+  environment:
+    BINTRAY_API_KEY:
+      from_secret: BINTRAY_API_KEY
+    BINTRAY_GPG_PASSPHRASE:
+      from_secret: BINTRAY_GPG_PASSPHRASE
+    BINTRAY_USER:
+      from_secret: BINTRAY_USER
+  when:
+    branch:
+    - master
+    event:
+    - tag
+
+- name: publish
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: GITHUB_TOKEN
+    files: "build/repository/com/molikuner/sqldelight/simple-jvm-driver/*/*"
+  when:
+    branch:
+    - master
+    event:
+    - tag
+
+...
