@@ -5,12 +5,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("com.jfrog.bintray") version "1.8.4"
     id("maven-publish")
-    kotlin("jvm") version "1.3.50"
+    kotlin("jvm") version "1.3.61"
     id("org.jetbrains.dokka") version "0.9.18"
 }
 
 group = "com.molikuner.sqldelight"
-version = "1.2.0"
+version = "1.2.1"
 
 repositories {
     mavenCentral()
