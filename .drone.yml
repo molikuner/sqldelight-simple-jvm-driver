@@ -9,13 +9,13 @@ platform:
 
 steps:
 - name: build
-  image: openjdk:8-jdk-stretch
+  image: openjdk:jdk-slim
   commands:
   - ./gradlew build
   - ./gradlew publish
 
 - name: deploy
-  image: openjdk:8-jdk-stetch
+  image: openjdk:jdk-slim
   commands:
   - ./gradlew bintrayUpload
   environment:
