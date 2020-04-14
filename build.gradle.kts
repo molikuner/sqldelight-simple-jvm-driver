@@ -3,14 +3,14 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.jfrog.bintray") version "1.8.4"
+    id("com.jfrog.bintray") version "1.8.5"
     id("maven-publish")
-    kotlin("jvm") version "1.3.61"
-    id("org.jetbrains.dokka") version "0.9.18"
+    kotlin("jvm") version "1.3.72"
+    id("org.jetbrains.dokka") version "0.10.1"
 }
 
 group = "com.molikuner.sqldelight"
-version = "1.2.2"
+version = "1.3.0"
 
 repositories {
     mavenCentral()
@@ -35,14 +35,14 @@ tasks.dokka {
 val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles Kotlin docs with Dokka"
-    classifier = "javadoc"
+    archiveClassifier.set("javadoc")
     from(tasks.dokka)
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles sources JAR"
-    classifier = "sources"
+    archiveClassifier.set("sources")
     from(sourceSets["main"].allSource)
 }
 
@@ -61,17 +61,17 @@ publishing {
     }
 }
 
-fun getProperty(project: String, environment: String): String? {
-    return if (this.project.hasProperty(project)) {
-        this.project.property(project) as? String?
+fun getProperty(projectKey: String, environmentKey: String): String? {
+    return if (project.hasProperty(projectKey)) {
+        project.property(projectKey) as? String?
     } else {
-        System.getenv(environment)
+        System.getenv(environmentKey)
     }
 }
 
 bintray {
-    user = getProperty(project = "bintray.user", environment = "BINTRAY_USER")
-    key = getProperty(project = "bintray.apiKey", environment = "BINTRAY_API_KEY")
+    user = getProperty(projectKey = "bintray.user", environmentKey = "BINTRAY_USER")
+    key = getProperty(projectKey = "bintray.apiKey", environmentKey = "BINTRAY_API_KEY")
     setPublications("default")
     pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
         repo = "maven-extensions"
@@ -90,7 +90,7 @@ bintray {
             vcsTag = rootVersion
             gpg(delegateClosureOf<BintrayExtension.GpgConfig> {
                 sign = true
-                passphrase = getProperty(project = "bintray.gpg.passphrase", environment = "BINTRAY_GPG_PASSPHRASE")
+                passphrase = getProperty(projectKey = "bintray.gpg.passphrase", environmentKey = "BINTRAY_GPG_PASSPHRASE")
             })
         })
         publish = true
