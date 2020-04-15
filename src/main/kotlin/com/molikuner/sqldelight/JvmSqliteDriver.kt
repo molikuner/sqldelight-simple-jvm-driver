@@ -30,7 +30,7 @@ import java.util.Properties
  * @param path your path to the DB file/[JvmSqliteDriver.IN_MEMORY] for in memory DBs
  * @param properties your properties for the underlying JdbcSqliteDriver
  */
-class JvmSqliteDriver @JvmOverloads constructor(
+public class JvmSqliteDriver @JvmOverloads constructor(
     schema: SqlDriver.Schema,
     path: String,
     properties: Properties = Properties()
