@@ -5,12 +5,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("com.jfrog.bintray") version "1.8.5"
     id("maven-publish")
-    kotlin("jvm") version "1.3.72"
-    id("org.jetbrains.dokka") version "0.10.1"
+    kotlin("jvm") version "1.4.0"
+    id("org.jetbrains.dokka") version "1.4.0-rc"
 }
 
 group = "com.molikuner.sqldelight"
-version = "1.4.0"
+version = "1.4.1"
 
 repositories {
     mavenCentral()
@@ -27,8 +27,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-tasks.dokka {
-    outputFormat = "html"
+tasks.dokkaHtml.configure {
     outputDirectory = "$buildDir/javadoc"
 }
 
@@ -36,7 +35,7 @@ val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles Kotlin docs with Dokka"
     archiveClassifier.set("javadoc")
-    from(tasks.dokka)
+    from(tasks.dokkaHtml)
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
