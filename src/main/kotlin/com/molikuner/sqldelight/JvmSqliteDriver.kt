@@ -1,4 +1,4 @@
-/**  Copyright 2019 molikuner
+/**  Copyright 2020 molikuner
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import java.util.Properties
  * @param path your path to the DB file/[JvmSqliteDriver.IN_MEMORY] for in memory DBs
  * @param properties your properties for the underlying JdbcSqliteDriver
  */
-public class JvmSqliteDriver @JvmOverloads constructor(
+public class JvmSqliteDriver @JvmOverloads public constructor(
     schema: SqlDriver.Schema,
     path: String,
     properties: Properties = Properties()
@@ -65,7 +65,7 @@ public class JvmSqliteDriver @JvmOverloads constructor(
         execute(null, "PRAGMA user_version = $newVersion", 0)
     }
 
-    companion object {
+    public companion object {
         /**
          * A simple string to create a in memory DB. Pass as path parameter in [JvmSqliteDriver] constructor.
          */
