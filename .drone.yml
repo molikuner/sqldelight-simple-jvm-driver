@@ -36,7 +36,8 @@ steps:
   settings:
     api_key:
       from_secret: GITHUB_TOKEN
-    files: "build/repository/com/molikuner/sqldelight/simple-jvm-driver/*/*"
+    draft: true
+    files: build/repository/com/molikuner/sqldelight/simple-jvm-driver/*/*
   when:
     branch:
     - master
