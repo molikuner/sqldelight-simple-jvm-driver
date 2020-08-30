@@ -23,6 +23,10 @@ dependencies {
     implementation("com.squareup.sqldelight:runtime-jvm:$version")
 }
 
+kotlin {
+    explicitApi()
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
