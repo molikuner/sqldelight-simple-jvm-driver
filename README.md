@@ -31,3 +31,19 @@ as the android driver.
 as this is just a simple wrapper around the official [SQLDelight](https://github.com/cashapp/sqldelight) jvm driver
 this library uses the same versioning as the underlying driver implementation. this also means, that there will be one release
 of this lib per release of SQLDelight.
+
+## releasing
+
+1. update sqldelight version
+2. create tag on new commit
+3. push to github and wait for drone to publish
+
+since [drone](https://drone.io) seems to be broken somehow, i'm currently releasing the versions manually by executing the following steps:
+
+1. open build.gradle.kts and replace the following: in the bintray section
+  1. user with `molikuner`
+  2. key with the api key from my user profile of bintray
+  3. the gpg passphrase with the passphrase from my password manager
+
+2. run `./gradlew bintrayUpload`
+3. upload all files from `build/repository/com/molikuner/sqldelight/simple-jvm-driver/<version>/` and the `.asc` files from bintray to github tag
