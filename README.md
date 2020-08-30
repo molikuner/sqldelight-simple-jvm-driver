@@ -34,13 +34,13 @@ of this lib per release of SQLDelight.
 
 ## releasing
 
-1. update sqldelight version
-2. create tag on new commit
-3. push to github and wait for drone to publish or do it manually (see below)
+1. create tag on new commit
+2. push to github and wait for drone to finish build
+3. publish by clicking deploy or running `drone promote molikuner/sqldelight-simple-jvm-driver <buildNumber> <version>`
 4. upload the `.asc` files from bintray to github release
 5. press publish on github
 
-~~since [drone](https://drone.io) seems to be broken somehow, i'm currently releasing the versions manually by executing the following steps:~~
+if [drone](https://cloud.drone.io) build/promote fails, these steps are needed to do it manually:
 
 1. open build.gradle.kts and replace the following: in the bintray section
    1. user with `molikuner`
