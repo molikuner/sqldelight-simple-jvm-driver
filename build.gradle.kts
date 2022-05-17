@@ -6,7 +6,7 @@ plugins {
     id("com.jfrog.bintray") version "1.8.5"
     id("maven-publish")
     kotlin("jvm") version "1.4.0"
-    id("org.jetbrains.dokka") version "1.4.0-rc"
+    id("org.jetbrains.dokka") version "1.6.21"
 }
 
 group = "com.molikuner.sqldelight"
@@ -32,7 +32,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.dokkaHtml.configure {
-    outputDirectory = "$buildDir/javadoc"
+    outputDirectory.set(buildDir.resolve("javadoc"))
 }
 
 val dokkaJar by tasks.creating(Jar::class) {
