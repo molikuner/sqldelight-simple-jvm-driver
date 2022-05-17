@@ -1,12 +1,11 @@
-import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.jfrog.bintray") version "1.8.5"
     id("maven-publish")
     kotlin("jvm") version "1.4.0"
     id("org.jetbrains.dokka") version "1.6.21"
+    signing
 }
 
 group = "com.molikuner.sqldelight"
@@ -14,7 +13,6 @@ version = "1.4.3"
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
@@ -72,30 +70,11 @@ fun getProperty(projectKey: String, environmentKey: String): String? {
     }
 }
 
-bintray {
-    user = getProperty(projectKey = "bintray.user", environmentKey = "BINTRAY_USER")
-    key = getProperty(projectKey = "bintray.apiKey", environmentKey = "BINTRAY_API_KEY")
-    setPublications("default")
-    pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-        repo = "maven-extensions"
-        name = "sqldelight-simple-jvm-driver"
-        userOrg = "molikuner"
-        websiteUrl = "https://github.com/molikuner/sqldelight-simple-jvm-driver"
-        githubRepo = "molikuner/sqldelight-simple-jvm-driver"
-        vcsUrl = "https://github.com/molikuner/sqldelight-simple-jvm-driver.git"
-        description = "Simple wrapper for default JVM driver of SQLDelight"
-        setLabels("kotlin", "SQLDelight", "JVM", "driver", "SQL")
-        setLicenses("Apache-2.0")
-        desc = description
-        version(delegateClosureOf<BintrayExtension.VersionConfig> {
-            val rootVersion = rootProject.version as String
-            name = rootVersion
-            vcsTag = rootVersion
-            gpg(delegateClosureOf<BintrayExtension.GpgConfig> {
-                sign = true
-                passphrase = getProperty(projectKey = "bintray.gpg.passphrase", environmentKey = "BINTRAY_GPG_PASSPHRASE")
-            })
-        })
-        publish = true
-    })
+signing {
+    val signingKey = getProperty(projectKey = "gpg.key", environmentKey = "GPG_KEY")
+    if (signingKey == null) logger.warn("The GPG key for signing was not found. Either provide it as env variable 'GPG_KEY' or as project property 'gpg.key'. Otherwise the signing will fail!")
+    val signingPassword = getProperty(projectKey = "gpg.passphrase", environmentKey = "GPG_PASSPHRASE")
+    if (signingPassword == null) logger.warn("The passphrase for the signing key was not found. Either provide it as env variable 'GPG_PASSPHRASE' or as project property 'gpg.passphrase'. Otherwise the signing might fail!")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications["default"])
 }

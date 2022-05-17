@@ -12,19 +12,18 @@ steps:
   image: openjdk:jdk-slim
   commands:
   - ./gradlew build
-  - ./gradlew publish
+  - ./gradlew dokkaJar
+  - ./gradlew sourceJar
 
-- name: deploy
+- name: sign
   image: openjdk:jdk-slim
   commands:
-  - ./gradlew bintrayUpload
+  - ./gradlew publishDefaultPublicationToMavenRepository
   environment:
-    BINTRAY_API_KEY:
-      from_secret: BINTRAY_API_KEY
-    BINTRAY_GPG_PASSPHRASE:
-      from_secret: BINTRAY_GPG_PASSPHRASE
-    BINTRAY_USER:
-      from_secret: BINTRAY_USER
+    GPG_KEY:
+      from_secret: GPG_KEY
+    GPG_PASSPHRASE:
+      from_secret: GPG_PASSPHRASE
   when:
     event:
     - promote
