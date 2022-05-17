@@ -26,7 +26,7 @@ steps:
       from_secret: GPG_PASSPHRASE
   when:
     event:
-    - promote
+      - tag
 
 - name: publish
   image: plugins/github-release
@@ -35,9 +35,8 @@ steps:
       from_secret: GITHUB_TOKEN
     draft: true
     files: build/repository/com/molikuner/sqldelight/simple-jvm-driver/*/*
-    title: ${DRONE_TAG=${DRONE_DEPLOY_TO}}
   when:
     event:
-    - promote
+      - tag
 
 ...
