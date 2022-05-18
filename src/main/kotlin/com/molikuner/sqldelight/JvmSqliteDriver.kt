@@ -29,25 +29,35 @@ import java.util.Properties
  * @param schema your schema for the DB
  * @param path your path to the DB file/[JvmSqliteDriver.IN_MEMORY] for in memory DBs
  * @param properties your properties for the underlying JdbcSqliteDriver
+ * @param downgradeHandler a method to handle downgrades of the database. You might
+ *                         decide to drop the database and create it again.
  */
 public class JvmSqliteDriver @JvmOverloads public constructor(
     schema: SqlDriver.Schema,
     path: String,
-    properties: Properties = Properties()
+    properties: Properties = Properties(),
+    downgradeHandler: JvmSqliteDriver.(databaseVersion: Int) -> Unit = {
+        throw IllegalStateException(
+            "Downgrading the database isn't supported out of the box! Database is at version $it whereas the schema is at version ${schema.version}"
+        )
+    }
 ) : SqlDriver by JdbcSqliteDriver(normalize(path), properties) {
 
     init {
-        val initSchemaVersion = databaseSchemaVersion()
+        val databaseVersion = databaseSchemaVersion()
         when {
-            initSchemaVersion == 0 -> {
+            databaseVersion == 0 -> {
                 schema.create(this)
                 setDatabaseSchemaVersion(schema.version)
             }
-            initSchemaVersion < schema.version -> {
-                schema.migrate(this, initSchemaVersion, schema.version)
+            databaseVersion < schema.version -> {
+                schema.migrate(this, databaseVersion, schema.version)
                 setDatabaseSchemaVersion(schema.version)
             }
-            initSchemaVersion > schema.version -> throw IllegalStateException("You can't downgrade?")
+            databaseVersion > schema.version -> {
+                downgradeHandler(this, databaseVersion)
+                setDatabaseSchemaVersion(schema.version)
+            }
         }
     }
 
@@ -57,12 +67,13 @@ public class JvmSqliteDriver @JvmOverloads public constructor(
      *
      * @return the current schema version
      */
-    public fun databaseSchemaVersion(): Int = executeQuery(null, "PRAGMA user_version", 0).use {
+    public fun databaseSchemaVersion(): Int = executeQuery(identifier = 0, "PRAGMA user_version", 0).use {
         it.getLong(0)?.toInt() ?: throw IllegalStateException("Could not get schema version from db")
     }
 
     private fun setDatabaseSchemaVersion(newVersion: Int) {
-        execute(null, "PRAGMA user_version = $newVersion", 0)
+        // we don't save this statement, i.e. identifier = null, since it will be used only once anyway
+        execute(identifier = null, "PRAGMA user_version = $newVersion", 0)
     }
 
     public companion object {

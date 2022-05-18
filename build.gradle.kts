@@ -21,6 +21,7 @@ dependencies {
     implementation("com.squareup.sqldelight:runtime-jvm:$version")
 
     testImplementation(kotlin("test-junit"))
+    testImplementation("io.mockk:mockk:1.12.2")
 }
 
 kotlin {
