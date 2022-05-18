@@ -1,0 +1,18 @@
+public final class com/molikuner/sqldelight/JvmSqliteDriver : com/squareup/sqldelight/db/SqlDriver {
+	public static final field Companion Lcom/molikuner/sqldelight/JvmSqliteDriver$Companion;
+	public static final field IN_MEMORY Ljava/lang/String;
+	public fun <init> (Lcom/squareup/sqldelight/db/SqlDriver$Schema;Ljava/lang/String;)V
+	public fun <init> (Lcom/squareup/sqldelight/db/SqlDriver$Schema;Ljava/lang/String;Ljava/util/Properties;)V
+	public fun <init> (Lcom/squareup/sqldelight/db/SqlDriver$Schema;Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lcom/squareup/sqldelight/db/SqlDriver$Schema;Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
+	public fun currentTransaction ()Lcom/squareup/sqldelight/Transacter$Transaction;
+	public final fun databaseSchemaVersion ()I
+	public fun execute (Ljava/lang/Integer;Ljava/lang/String;ILkotlin/jvm/functions/Function1;)V
+	public fun executeQuery (Ljava/lang/Integer;Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lcom/squareup/sqldelight/db/SqlCursor;
+	public fun newTransaction ()Lcom/squareup/sqldelight/Transacter$Transaction;
+}
+
+public final class com/molikuner/sqldelight/JvmSqliteDriver$Companion {
+}
+
