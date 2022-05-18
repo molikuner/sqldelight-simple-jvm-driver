@@ -1,4 +1,4 @@
-/**  Copyright 2020 molikuner
+/**  Copyright 2020-2022 molikuner
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class JvmSqliteDriver @JvmOverloads public constructor(
     schema: SqlDriver.Schema,
     path: String,
     properties: Properties = Properties()
-) : SqlDriver by JdbcSqliteDriver(path.normalizedDBPath, properties) {
+) : SqlDriver by JdbcSqliteDriver(normalize(path), properties) {
 
     init {
         val initSchemaVersion = databaseSchemaVersion()
@@ -71,8 +71,8 @@ public class JvmSqliteDriver @JvmOverloads public constructor(
          */
         public const val IN_MEMORY: String = ""
 
-        private val String.normalizedDBPath: String
-            get() = "jdbc:sqlite:${"^(?:jdbc:)?(?:sqlite:)?(.+)$".toRegex().matchEntire(this)?.groupValues?.get(1)
-                ?: throw IllegalArgumentException("Could not normalize database path")}"
+        private val normalizationRegex = "^(?:jdbc:)?(?:sqlite:)?(.*)$".toRegex()
+        internal fun normalize(path: String): String =
+            "jdbc:sqlite:${normalizationRegex.matchEntire(path)?.groupValues?.get(1) ?: throw IllegalArgumentException("Could not normalize database path")}"
     }
 }

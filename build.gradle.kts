@@ -19,6 +19,8 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("com.squareup.sqldelight:sqlite-driver:$version")
     implementation("com.squareup.sqldelight:runtime-jvm:$version")
+
+    testImplementation(kotlin("test-junit"))
 }
 
 kotlin {
