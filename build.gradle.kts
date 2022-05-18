@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.molikuner.sqldelight"
-version = "1.4.3"
+version = "1.5.3"
 
 repositories {
     mavenCentral()
