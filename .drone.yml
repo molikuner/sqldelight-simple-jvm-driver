@@ -9,14 +9,14 @@ platform:
 
 steps:
 - name: build
-  image: openjdk:jdk-slim
+  image: openjdk:11-jdk-slim
   commands:
   - ./gradlew build
   - ./gradlew dokkaJar
   - ./gradlew sourceJar
 
 - name: sign
-  image: openjdk:jdk-slim
+  image: openjdk:11-jdk-slim
   commands:
   - ./gradlew publishDefaultPublicationToMavenRepository
   environment:
