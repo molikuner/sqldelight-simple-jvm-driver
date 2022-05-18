@@ -70,11 +70,14 @@ fun getProperty(projectKey: String, environmentKey: String): String? {
     }
 }
 
-signing {
-    val signingKey = getProperty(projectKey = "gpg.key", environmentKey = "GPG_KEY")
-    if (signingKey == null) logger.warn("The GPG key for signing was not found. Either provide it as env variable 'GPG_KEY' or as project property 'gpg.key'. Otherwise the signing will fail!")
-    val signingPassword = getProperty(projectKey = "gpg.passphrase", environmentKey = "GPG_PASSPHRASE")
-    if (signingPassword == null) logger.warn("The passphrase for the signing key was not found. Either provide it as env variable 'GPG_PASSPHRASE' or as project property 'gpg.passphrase'. Otherwise the signing might fail!")
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign(publishing.publications["default"])
+val signingKey = getProperty(projectKey = "gpg.key", environmentKey = "GPG_KEY")
+if (signingKey == null) {
+    logger.warn("The GPG key for signing was not found. Either provide it as env variable 'GPG_KEY' or as project property 'gpg.key'. Will not sign!")
+} else {
+    signing {
+        val signingPassword = getProperty(projectKey = "gpg.passphrase", environmentKey = "GPG_PASSPHRASE")
+        if (signingPassword == null) logger.warn("The passphrase for the signing key was not found. Either provide it as env variable 'GPG_PASSPHRASE' or as project property 'gpg.passphrase'. Otherwise the signing might fail!")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications["default"])
+    }
 }
