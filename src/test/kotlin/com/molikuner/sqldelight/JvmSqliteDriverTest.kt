@@ -15,10 +15,11 @@
 
 package com.molikuner.sqldelight
 
+import app.cash.sqldelight.db.SqlCursor
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.molikuner.sqldelight.JvmSqliteDriver.Companion.IN_MEMORY
 import com.molikuner.sqldelight.JvmSqliteDriver.Companion.normalize
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockk
@@ -209,21 +210,23 @@ class JvmSqliteDriverTest {
 
         mockkConstructor(JdbcSqliteDriver::class)
         every {
-            anyConstructed<JdbcSqliteDriver>().executeQuery(
+            anyConstructed<JdbcSqliteDriver>().executeQuery<Int>(
                 identifier = 0,
                 sql = "PRAGMA user_version",
+                mapper = captureLambda(),
                 parameters = 0
             )
-        } returns mockk {
-            every { getLong(0) } returns databaseVersion.toLong()
-            justRun { close() }
+        } answers {
+            lambda<(SqlCursor) -> Int>().captured(mockk {
+                every { getLong(0) } returns databaseVersion.toLong()
+            })
         }
-        justRun {
+        every {
             anyConstructed<JdbcSqliteDriver>().execute(
                 identifier = null,
                 sql = "PRAGMA user_version = $schemaVersion",
                 parameters = 0
             )
-        }
+        } returns 1
     }
 }

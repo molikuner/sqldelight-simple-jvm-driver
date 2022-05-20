@@ -3,14 +3,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("maven-publish")
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.6.21"
     id("org.jetbrains.dokka") version "1.6.21"
     id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.10.0"
     signing
 }
 
 group = "com.molikuner.sqldelight"
-version = "1.5.3"
+version = "2.0.0-alpha02"
 
 repositories {
     mavenCentral()
@@ -18,11 +18,10 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("com.squareup.sqldelight:sqlite-driver:$version")
-    implementation("com.squareup.sqldelight:runtime-jvm:$version")
+    implementation("app.cash.sqldelight:sqlite-driver:$version")
 
     testImplementation(kotlin("test-junit"))
-    testImplementation("io.mockk:mockk:1.12.2")
+    testImplementation("io.mockk:mockk:1.12.4")
 }
 
 kotlin {

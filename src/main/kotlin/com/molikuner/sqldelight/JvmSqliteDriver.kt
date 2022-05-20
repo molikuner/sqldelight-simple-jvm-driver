@@ -15,9 +15,8 @@
 
 package com.molikuner.sqldelight
 
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.db.use
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import java.util.Properties
 
 /**
@@ -67,9 +66,12 @@ public class JvmSqliteDriver @JvmOverloads public constructor(
      *
      * @return the current schema version
      */
-    public fun databaseSchemaVersion(): Int = executeQuery(identifier = 0, "PRAGMA user_version", 0).use {
-        it.getLong(0)?.toInt() ?: throw IllegalStateException("Could not get schema version from db")
-    }
+    public fun databaseSchemaVersion(): Int = executeQuery(
+        identifier = 0,
+        sql = "PRAGMA user_version",
+        mapper = { it.getLong(0)?.toInt() ?: throw IllegalStateException("Could not get schema version from db") },
+        parameters = 0
+    )
 
     private fun setDatabaseSchemaVersion(newVersion: Int) {
         // we don't save this statement, i.e. identifier = null, since it will be used only once anyway
