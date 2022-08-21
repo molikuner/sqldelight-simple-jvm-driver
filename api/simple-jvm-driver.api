@@ -1,21 +1,11 @@
-public final class com/molikuner/sqldelight/JvmSqliteDriver : app/cash/sqldelight/db/SqlDriver {
-	public static final field Companion Lcom/molikuner/sqldelight/JvmSqliteDriver$Companion;
-	public static final field IN_MEMORY Ljava/lang/String;
-	public fun <init> (Lapp/cash/sqldelight/db/SqlSchema;Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function2;[Lapp/cash/sqldelight/db/AfterVersion;)V
-	public synthetic fun <init> (Lapp/cash/sqldelight/db/SqlSchema;Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function2;[Lapp/cash/sqldelight/db/AfterVersion;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Lapp/cash/sqldelight/db/SqlSchema;Ljava/lang/String;Ljava/util/Properties;[Lapp/cash/sqldelight/db/AfterVersion;)V
-	public fun <init> (Lapp/cash/sqldelight/db/SqlSchema;Ljava/lang/String;[Lapp/cash/sqldelight/db/AfterVersion;)V
-	public fun addListener (Lapp/cash/sqldelight/Query$Listener;[Ljava/lang/String;)V
-	public fun close ()V
-	public fun currentTransaction ()Lapp/cash/sqldelight/Transacter$Transaction;
-	public final fun databaseSchemaVersion ()I
-	public fun execute (Ljava/lang/Integer;Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lapp/cash/sqldelight/db/QueryResult;
-	public fun executeQuery (Ljava/lang/Integer;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/functions/Function1;)Lapp/cash/sqldelight/db/QueryResult;
-	public fun newTransaction ()Lapp/cash/sqldelight/db/QueryResult;
-	public fun notifyListeners ([Ljava/lang/String;)V
-	public fun removeListener (Lapp/cash/sqldelight/Query$Listener;[Ljava/lang/String;)V
+public final class com/molikuner/sqldelight/DatabaseSchemaVersionKt {
+	public static final fun databaseSchemaVersionSqlite (Lapp/cash/sqldelight/db/SqlDriver;)Lapp/cash/sqldelight/db/QueryResult;
 }
 
-public final class com/molikuner/sqldelight/JvmSqliteDriver$Companion {
+public final class com/molikuner/sqldelight/UpsertSchemaKt {
+	public static final fun upsertSchema (Lapp/cash/sqldelight/db/SqlDriver;Lapp/cash/sqldelight/db/SqlSchema;[Lapp/cash/sqldelight/db/AfterVersion;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun upsertSchema$default (Lapp/cash/sqldelight/db/SqlDriver;Lapp/cash/sqldelight/db/SqlSchema;[Lapp/cash/sqldelight/db/AfterVersion;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun upsertSchemaSync (Lapp/cash/sqldelight/db/SqlDriver;Lapp/cash/sqldelight/db/SqlSchema;[Lapp/cash/sqldelight/db/AfterVersion;Lkotlin/jvm/functions/Function2;)Lapp/cash/sqldelight/db/SqlDriver;
+	public static synthetic fun upsertSchemaSync$default (Lapp/cash/sqldelight/db/SqlDriver;Lapp/cash/sqldelight/db/SqlSchema;[Lapp/cash/sqldelight/db/AfterVersion;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lapp/cash/sqldelight/db/SqlDriver;
 }
 

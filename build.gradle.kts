@@ -18,10 +18,11 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("app.cash.sqldelight:sqlite-driver:$version")
+    implementation("app.cash.sqldelight:runtime:$version")
 
     testImplementation(kotlin("test-junit"))
     testImplementation("io.mockk:mockk:1.12.4")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 }
 
 kotlin {
