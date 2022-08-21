@@ -15,8 +15,11 @@
 
 package com.molikuner.sqldelight
 
+import app.cash.sqldelight.db.AfterVersion
+import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlCursor
 import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.molikuner.sqldelight.JvmSqliteDriver.Companion.IN_MEMORY
 import com.molikuner.sqldelight.JvmSqliteDriver.Companion.normalize
@@ -27,6 +30,7 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
+import io.mockk.verifyOrder
 import java.sql.DriverManager
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -136,9 +140,9 @@ class JvmSqliteDriverTest {
     @Test
     fun `init - uninitialized database - should create schema`() {
         // Give
-        val schema = mockk<SqlDriver.Schema> {
+        val schema = mockk<SqlSchema> {
             every { version } returns 123
-            justRun { create(any()) }
+            every { create(any()) } returns QueryResult.Unit
         }
         mockDriverWithDatabaseVersion(databaseVersion = 0, schema.version)
 
@@ -152,9 +156,9 @@ class JvmSqliteDriverTest {
     @Test
     fun `init - older database - should migrate`() {
         // Give
-        val schema = mockk<SqlDriver.Schema> {
+        val schema = mockk<SqlSchema> {
             every { version } returns 123
-            justRun { migrate(any(), any(), any()) }
+            every { migrate(any(), any(), any()) } returns QueryResult.Unit
         }
         mockDriverWithDatabaseVersion(databaseVersion = 10, schema.version)
 
@@ -168,7 +172,7 @@ class JvmSqliteDriverTest {
     @Test
     fun `init - newer database - should call downgradeHandler`() {
         // Give
-        val schema = mockk<SqlDriver.Schema> {
+        val schema = mockk<SqlSchema> {
             every { version } returns 123
         }
         mockDriverWithDatabaseVersion(databaseVersion = 1234, schema.version)
@@ -187,7 +191,7 @@ class JvmSqliteDriverTest {
     @Test
     fun `default downgradeHandler - when invoked - should throw exception`() {
         // Give
-        val schema = mockk<SqlDriver.Schema> {
+        val schema = mockk<SqlSchema> {
             every { version } returns 123
         }
         mockDriverWithDatabaseVersion(databaseVersion = 1234, schema.version)
@@ -204,6 +208,39 @@ class JvmSqliteDriverTest {
         assertEquals(IllegalStateException::class, exception::class)
     }
 
+    @Test
+    fun `init - upgrade callbacks are called when upgrading`() {
+        // Give
+        val schema = mockk<SqlSchema> {
+            every { version } returns 1234
+            every { migrate(any(), any(), any()) } returns QueryResult.Unit
+        }
+        mockDriverWithDatabaseVersion(databaseVersion = 1, schema.version)
+        val migrationCallback12 = mockk<(SqlDriver) -> Unit> {
+            justRun { this@mockk(any()) }
+        }
+        val migrationCallback123 = mockk<(SqlDriver) -> Unit> {
+            justRun { this@mockk(any()) }
+        }
+
+        // When
+        val driver = JvmSqliteDriver(
+            schema, IN_MEMORY, upgradeCallbacks = arrayOf(
+                AfterVersion(12, migrationCallback12),
+                AfterVersion(123, migrationCallback123)
+            )
+        )
+
+        // Then
+        verifyOrder {
+            schema.migrate(driver, 1, 13)
+            migrationCallback12(driver)
+            schema.migrate(driver, 13, 124)
+            migrationCallback123(driver)
+            schema.migrate(driver, 124, 1234)
+        }
+    }
+
     private fun mockDriverWithDatabaseVersion(databaseVersion: Int, schemaVersion: Int) {
         mockkStatic(DriverManager::class)
         every { DriverManager.getConnection(any(), any()) } returns mockk()
@@ -217,9 +254,9 @@ class JvmSqliteDriverTest {
                 parameters = 0
             )
         } answers {
-            lambda<(SqlCursor) -> Int>().captured(mockk {
+            QueryResult.Value(lambda<(SqlCursor) -> Int>().captured(mockk {
                 every { getLong(0) } returns databaseVersion.toLong()
-            })
+            }))
         }
         every {
             anyConstructed<JdbcSqliteDriver>().execute(
@@ -227,6 +264,6 @@ class JvmSqliteDriverTest {
                 sql = "PRAGMA user_version = $schemaVersion",
                 parameters = 0
             )
-        } returns 1
+        } returns QueryResult.Value(1)
     }
 }

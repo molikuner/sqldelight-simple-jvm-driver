@@ -1,17 +1,17 @@
 public final class com/molikuner/sqldelight/JvmSqliteDriver : app/cash/sqldelight/db/SqlDriver {
 	public static final field Companion Lcom/molikuner/sqldelight/JvmSqliteDriver$Companion;
 	public static final field IN_MEMORY Ljava/lang/String;
-	public fun <init> (Lapp/cash/sqldelight/db/SqlDriver$Schema;Ljava/lang/String;)V
-	public fun <init> (Lapp/cash/sqldelight/db/SqlDriver$Schema;Ljava/lang/String;Ljava/util/Properties;)V
-	public fun <init> (Lapp/cash/sqldelight/db/SqlDriver$Schema;Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function2;)V
-	public synthetic fun <init> (Lapp/cash/sqldelight/db/SqlDriver$Schema;Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lapp/cash/sqldelight/db/SqlSchema;Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function2;[Lapp/cash/sqldelight/db/AfterVersion;)V
+	public synthetic fun <init> (Lapp/cash/sqldelight/db/SqlSchema;Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function2;[Lapp/cash/sqldelight/db/AfterVersion;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lapp/cash/sqldelight/db/SqlSchema;Ljava/lang/String;Ljava/util/Properties;[Lapp/cash/sqldelight/db/AfterVersion;)V
+	public fun <init> (Lapp/cash/sqldelight/db/SqlSchema;Ljava/lang/String;[Lapp/cash/sqldelight/db/AfterVersion;)V
 	public fun addListener (Lapp/cash/sqldelight/Query$Listener;[Ljava/lang/String;)V
 	public fun close ()V
 	public fun currentTransaction ()Lapp/cash/sqldelight/Transacter$Transaction;
 	public final fun databaseSchemaVersion ()I
-	public fun execute (Ljava/lang/Integer;Ljava/lang/String;ILkotlin/jvm/functions/Function1;)J
-	public fun executeQuery (Ljava/lang/Integer;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public fun newTransaction ()Lapp/cash/sqldelight/Transacter$Transaction;
+	public fun execute (Ljava/lang/Integer;Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lapp/cash/sqldelight/db/QueryResult;
+	public fun executeQuery (Ljava/lang/Integer;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/functions/Function1;)Lapp/cash/sqldelight/db/QueryResult;
+	public fun newTransaction ()Lapp/cash/sqldelight/db/QueryResult;
 	public fun notifyListeners ([Ljava/lang/String;)V
 	public fun removeListener (Lapp/cash/sqldelight/Query$Listener;[Ljava/lang/String;)V
 }

@@ -15,7 +15,10 @@
 
 package com.molikuner.sqldelight
 
+import app.cash.sqldelight.db.AfterVersion
 import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
+import app.cash.sqldelight.db.migrateWithCallbacks
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import java.util.Properties
 
@@ -30,16 +33,18 @@ import java.util.Properties
  * @param properties your properties for the underlying JdbcSqliteDriver
  * @param downgradeHandler a method to handle downgrades of the database. You might
  *                         decide to drop the database and create it again.
+ * @param upgradeCallbacks callbacks to be executed, when upgrading the DB schema
  */
 public class JvmSqliteDriver @JvmOverloads public constructor(
-    schema: SqlDriver.Schema,
+    schema: SqlSchema,
     path: String,
     properties: Properties = Properties(),
     downgradeHandler: JvmSqliteDriver.(databaseVersion: Int) -> Unit = {
         throw IllegalStateException(
             "Downgrading the database isn't supported out of the box! Database is at version $it whereas the schema is at version ${schema.version}"
         )
-    }
+    },
+    vararg upgradeCallbacks: AfterVersion
 ) : SqlDriver by JdbcSqliteDriver(normalize(path), properties) {
 
     init {
@@ -50,7 +55,7 @@ public class JvmSqliteDriver @JvmOverloads public constructor(
                 setDatabaseSchemaVersion(schema.version)
             }
             databaseVersion < schema.version -> {
-                schema.migrate(this, databaseVersion, schema.version)
+                schema.migrateWithCallbacks(this, databaseVersion, schema.version, *upgradeCallbacks)
                 setDatabaseSchemaVersion(schema.version)
             }
             databaseVersion > schema.version -> {
@@ -71,7 +76,7 @@ public class JvmSqliteDriver @JvmOverloads public constructor(
         sql = "PRAGMA user_version",
         mapper = { it.getLong(0)?.toInt() ?: throw IllegalStateException("Could not get schema version from db") },
         parameters = 0
-    )
+    ).value
 
     private fun setDatabaseSchemaVersion(newVersion: Int) {
         // we don't save this statement, i.e. identifier = null, since it will be used only once anyway
